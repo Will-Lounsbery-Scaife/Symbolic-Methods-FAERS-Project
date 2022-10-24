@@ -1,118 +1,65 @@
-    safetyreportid transmissiondateformat transmissiondate serious  \
-0        7686330-9                    102         20111222       1   
-1        7724308-7                    102         20111222       1   
-2        7727098-7                    102         20111222       1   
-3        7680008-3                    102         20111222       1   
-4        7723066-X                    102         20111222       1   
-..             ...                    ...              ...     ...   
-928      7824637-2                    102         20120403       1   
-929      7898903-9                    102         20120403       1   
-930      7928843-8                    102         20120403       1   
-931      7704490-8                    102         20111222       1   
-932      8053467-4                    102         20120608       1   
+7608326-5
+[{'reactionmeddrapt': 'EYELID OEDEMA'}, {'reactionmeddrapt': 'URTICARIA'}, {'reactionmeddrapt': 'DYSPNOEA'}, {'reactionmeddrapt': 'OROPHARYNGEAL DISCOMFORT'}]
+BETADINE
+['312570', '1149663', '108204', '238850', '797730', '798176']
+OXACILLIN
+['312127', '1743547', '1743549', '240637', '312128']
+XYLOCAINE
+['1010768', '1293648', '1608499', '1657026', '1010033', '1010035', '1010671', '1010673', '1010688', '1010692', '1010745', '1010749', '1010751', '1010755', '1010759', '1010763', '1010900', '1010902', '1737343', '1737345', '1737562', '1737563', '1737566', '1737567', '1737568', '1737569', '1737570', '1737571', '1737757', '1737758', '1737761', '1737762', '1867938', '1867940', '1867943', '1867944', '1867992', '1867993', '1867996', '1867997', '1868028', '1868029', '1737636', '1737637', '1737640', '1737641', '1737763', '1737764']
 
-    seriousnesscongenitalanomali receivedateformat receivedate  \
-0                              1               102    20110816   
-1                            NaN               102    20110901   
-2                            NaN               102    20110902   
-3                            NaN               102    20110812   
-4                            NaN               102    20110901   
-..                           ...               ...         ...   
-928                          NaN               102    20111019   
-929                            1               102    20111107   
-930                          NaN               102    20111118   
-931                          NaN               102    20110823   
-932                          NaN               102    20120118   
+7529826-2
+[{'reactionmeddrapt': 'HEPATITIS'}, {'reactionmeddrapt': 'RENAL FAILURE ACUTE'}, {'reactionmeddrapt': 'HAEMORRHAGIC FEVER'}, {'reactionmeddrapt': 'DIARRHOEA INFECTIOUS'}]
+LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE
+['979464', '979468', '979471', '979466', '979470', '979473']
+ATORVASTATIN
+no rxcuis
+LOPERAMIDE HCL
+['978010', '1250685', '978006']
+FELODIPINE WITH METOPROLOL
+no openfda
+TIORFAN
+no openfda
 
-    receiptdateformat receiptdate fulfillexpeditecriteria  \
-0                 102    20110809                       1   
-1                 102    20110822                       1   
-2                 102    20110826                       1   
-3                 102    20110809                       1   
-4                 102    20110823                       1   
-..                ...         ...                     ...   
-928               102    20110824                       1   
-929               102    20110825                       1   
-930               102    20110801                       1   
-931               102    20110810                       1   
-932               102    20110823                       1   
+7550361-X
+[{'reactionmeddrapt': 'CONDITION AGGRAVATED'}, {'reactionmeddrapt': 'DIARRHOEA'}, {'reactionmeddrapt': 'ASTHENIA'}]
+METHOTREXATE
+['1655956', '1946772', '105586', '283510', '283511', '283671', '284592', '284593', '284594', '284595', '105585', '311625', '1441416', '1544378', '1544383', '1544385', '1544386', '1544387', '1544388', '1544389', '1544390', '1544394', '1544395', '1544396', '1544397', '1544398', '1544401', '1544402', '1544403', '1544404', '1921592', '1921598', '1655959', '1655960', '2377333', '2377338', '2377341', '2377342', '2377343', '2377344', '2377345', '2377346', '2377347', '2377348', '2377349', '2377350', '2377351', '2377352', '2377353', '2377354', '1655967', '1655968', '1441402', '1441407', '1441411', '1441413', '1441418', '1441422', '1441424', '1594757', '1594759', '1747179', '1747181', '1747185', '1747187', '1747192', '1747194']
+FOLIC ACID
+['310410', '237786']
+ETANERCEPT
+['253014', '261105', '727757', '802652', '809158', '809159', '1653223', '1653225', '2182338', '2182340', '2392140', '2392142']
 
-                              companynumb  \
-0    FR-VIIV HEALTHCARE LIMITED-A0885985A   
-1                      FR-NOVOPROD-246918   
-2                   FR-JNJFOC-20070403938   
-3                FR-PFIZER INC-2006108647   
-4                FR-PFIZER INC-2007023948   
-..                                    ...   
-928        FR-SANOFI-AVENTIS-2011SA054192   
-929            FR-ASTRAZENECA-2011SE66358   
-930                      FR-ROCHE-1012731   
-931                    FR-NOVOPROD-333638   
-932          FR-GLAXOSMITHKLINE-B0776056A   
+7532852-0
+[{'reactionmeddrapt': 'DISEASE PROGRESSION'}, {'reactionmeddrapt': 'NEUROENDOCRINE TUMOUR'}]
+SUTENT
+['616279', '616283', '616289', '616292', '616285', '616287', '1541890', '1541928']
+NAPROXEN
+['198012', '198013', '198014', '311913', '849574', '311915', '603103', '207093', '849398', '849431', '105899', '608793', '835560', '849438']
+OMEPRAZOLE
+['402014', '753557', '753562', '198051', '199119', '200329', '2003656']
+MORPHINE SULFATE
+['892652', '1731522', '1731998', '1731999', '894912', '998212', '998213', '1729197', '1731995', '1732014', '891874', '891881', '891888', '891893', '892646', '1731517', '1731537', '1731545', '1728999', '894914', '1442790', '892582', '892672', '892589', '892625', '894780', '1732006', '892345', '892352', '892494', '892554', '892596', '892643', '894801', '894814', '892516', '892603', '892678', '894807', '892496', '892556', '892598', '892645', '892658', '894803', '894805', '894816', '1303736', '1303738', '892297', '892342', '892349', '892355', '894942', '894970', '1728783', '1728800', '1731993', '1732011', '892560', '892574', '892648', '892660', '894813', '1732003', '2055307', '2055311', '892473', '892489', '1732136', '2003714']
 
-                                         primarysource  \
-0    {'reportercountry': 'FRANCE', 'qualification':...   
-1    {'reportercountry': 'FRANCE', 'qualification':...   
-2    {'reportercountry': 'FRANCE', 'qualification':...   
-3    {'reportercountry': 'FRANCE', 'qualification':...   
-4    {'reportercountry': 'FRANCE', 'qualification':...   
-..                                                 ...   
-928  {'reportercountry': 'FRANCE', 'qualification':...   
-929  {'reportercountry': 'FRANCE', 'qualification':...   
-930  {'reportercountry': 'FRANCE', 'qualification':...   
-931  {'reportercountry': 'FRANCE', 'qualification':...   
-932  {'reportercountry': 'FRANCE', 'qualification':...   
+7546430-0
+[{'reactionmeddrapt': 'SEPSIS'}, {'reactionmeddrapt': 'CONDITION AGGRAVATED'}, {'reactionmeddrapt': 'BRONCHOPULMONARY ASPERGILLOSIS'}, {'reactionmeddrapt': 'STEVENS-JOHNSON SYNDROME'}, {'reactionmeddrapt': 'GENERAL PHYSICAL HEALTH DETERIORATION'}]
+ACETYLSALICYLIC ACID/PARACETAMOL
+no openfda
+ZOVIRAX
+['141859', '825321', '197312', '209977', '201903', '307730']
+ROCEPHIN
+no openfda
+NEXIUM
+['606726', '606728', '606730', '606731', '692576', '692578', '861568', '861570', '861576', '861583', '1297658', '1297660', '1297761', '1297763', '486501', '603536']
+SOLU-MEDROL
+['207191', '207193', '311659', '314099', '1357886', '1357888', '1743704', '1743707', '1743720', '1743722', '1743726', '1743729']
+PIPERACILLIN AND TAZOBACTAM
+['1659149', '1659137', '1659131', '312447']
+CANCIDAS
+['828539', '828541', '828755', '828757']
+VANCOMYCIN
+['313572', '239209', '1807508', '1807510', '1807511', '2118448', '2118449', '2387078', '2387079']
+ACETYLSALICYLIC ACID/PARACETAMOL
+no openfda
+IMMUNE GLOBULIN (HUMAN)
+no openfda
 
-                                       sender receiver  \
-0    {'senderorganization': 'FDA-Public Use'}     None   
-1    {'senderorganization': 'FDA-Public Use'}     None   
-2    {'senderorganization': 'FDA-Public Use'}     None   
-3    {'senderorganization': 'FDA-Public Use'}     None   
-4    {'senderorganization': 'FDA-Public Use'}     None   
-..                                        ...      ...   
-928  {'senderorganization': 'FDA-Public Use'}     None   
-929  {'senderorganization': 'FDA-Public Use'}     None   
-930  {'senderorganization': 'FDA-Public Use'}     None   
-931  {'senderorganization': 'FDA-Public Use'}     None   
-932  {'senderorganization': 'FDA-Public Use'}     None   
-
-                                               patient  \
-0    {'patientweight': '1.7', 'patientsex': '2', 'r...   
-1    {'patientonsetage': '31', 'patientonsetageunit...   
-2    {'patientweight': '46', 'patientsex': '2', 're...   
-3    {'patientonsetage': '52', 'patientonsetageunit...   
-4    {'patientsex': '2', 'reaction': [{'reactionmed...   
-..                                                 ...   
-928  {'patientonsetage': '21', 'patientonsetageunit...   
-929  {'patientonsetage': '0', 'patientonsetageunit'...   
-930  {'patientsex': '1', 'reaction': [{'reactionmed...   
-931  {'reaction': [{'reactionmeddrapt': 'RASH'}], '...   
-932  {'patientsex': '1', 'reaction': [{'reactionmed...   
-
-    seriousnesshospitalization seriousnessother seriousnesslifethreatening  \
-0                          NaN              NaN                        NaN   
-1                            1                1                        NaN   
-2                            1              NaN                          1   
-3                            1                1                        NaN   
-4                          NaN                1                        NaN   
-..                         ...              ...                        ...   
-928                        NaN                1                          1   
-929                        NaN              NaN                        NaN   
-930                          1                1                        NaN   
-931                          1              NaN                        NaN   
-932                          1                1                        NaN   
-
-    seriousnessdisabling seriousnessdeath  
-0                    NaN              NaN  
-1                    NaN              NaN  
-2                    NaN              NaN  
-3                      1              NaN  
-4                    NaN              NaN  
-..                   ...              ...  
-928                  NaN              NaN  
-929                  NaN                1  
-930                  NaN              NaN  
-931                  NaN              NaN  
-932                  NaN              NaN  
-
-[933 rows x 20 columns]
