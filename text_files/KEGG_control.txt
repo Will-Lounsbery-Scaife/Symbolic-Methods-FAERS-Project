@@ -1,0 +1,10 @@
+0
+{('DG01967', 1): 2, ('DG01472', 1): 1, ('DG01608', 2): 1, ('DG01953', 1): 1, ('DG01456', 1): 2, ('DG01452', 3): 2, ('DG02913', 2): 5, ('DG01455', 2): 2, ('DG01633', 1): 9, ('DG02068', 2): 1, ('DG01955', 1): 1, ('DG01491', 1): 2, ('DG03107', 1): 8, ('DG01656', 2): 4, ('DG01890', 1): 2, ('DG02859', 1): 1, ('DG01644', 1): 4, ('DG01889', 1): 2, ('DG02919', 1): 2, ('DG02852', 1): 4, ('DG01647', 2): 4, ('DG02886', 1): 2, ('DG02885', 1): 2, ('DG01637', 1): 2, ('DG01474', 2): 3, ('DG03064', 2): 3, ('DG03005', 1): 3, ('DG03200', 1): 3, ('DG01478', 1): 3}
+
+
+{'carbidopa': 1, 'levodopa': 1, 'levothyroxine': 1, 'salmeterol': 2, 'fluticasone': 1, 'tiotropium': 2, 'didanosine': 1, 'lamivudine': 1, 'nevirapine': 2, 'lopinavir': 2, 'ritonavir': 2, 'paliperidone': 3}
+
+
+{'DRD [HSA:1812 1813 1814 1815 1816] [KO:K04144 K04145 K04146 K04147 K05840]': 1, 'NR1A (THR) [HSA:7067 7068] [KO:K05547 K08362]': 1, 'ADRB2 [HSA:154] [KO:K04142]': 2, 'NR3C1 (GR) [HSA:2908] [KO:K05771]': 1, 'CHRM3 [HSA:1131] [KO:K04131]': 2, 'HIV-1 reverse transcriptase [KO:K24802]': 4, 'HBV reverse transcriptase [KO:K21037]': 1, 'HIV protease [KO:K22599]': 4, 'HTR2A [HSA:3356] [KO:K04157]': 3, 'DRD2 [HSA:1813] [KO:K04145]': 3}
+
+
