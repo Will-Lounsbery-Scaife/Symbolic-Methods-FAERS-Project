@@ -11,8 +11,9 @@ aeolus = 0
 FAERS_std = 1
 safetyreportid_list = []
 
-country_list = ["BE", "FR", "DE", "NL", "GB", "PL", "ES", "CH"]
-            
+#country_list = ["BE", "FR", "DE", "NL", "GB", "PL", "ES", "CH"]
+country_list = ["PT", "ES", "FR", "NL", "BE", "IT"]
+
 
 '''
 # rate limiting is important to avoid accidental service abuse of the OpenFDA API provider
@@ -189,9 +190,9 @@ if aeolus == 1:
 
 if FAERS_std == 1:
     # template for a drug value
-    drug_template = { "drug_concept_id": None, "drug_name": None, "KEGG": KEGG_template.copy()}
+    drug_template = {"KEGG": KEGG_template.copy()}
     # template for a primaryid value
-    pid_template = { 'reactions_MedDRA': None, 'drugs': []}
+    pid_template = { 'reactions_MedDRA': [], 'drugs': {}}
 
 
 
@@ -294,113 +295,122 @@ def FAERS_standard_generate_primaryids(fp, case):
         for line in fp:
             split_line = line.split("$")
             if split_line[5] in date_range and split_line[8] in country_list:
-                # store primaryid, country, age, gender, date
+                # store primaryid
                 primaryid = split_line[1]
-                #country_abbr = split_line[8]
-                #age = split_line[6]
-                #gender = split_line[7]
-                #event_dt = split_line[5]
-                #yield [primaryid, country_abbr, age, gender, event_dt]
                 yield primaryid
  
 
 # generate drug info associated with each primaryid
-def FAERS_standard_generate_drugs(string_list, fp):
-    # primaryid, DRUG_ID, DRUG_SEQ, PERIOD, RXAUI, DRUG
+def FAERS_standard_generate_drugs(id_dict, fp):
+    # primaryid, DRUG_ID, DRUG_SEQ, ROLE_COD, PERIOD, RXAUI, DRUG
     dct = 0
+    dset = {}
     for line in fp:
-        split_line = line.split("$")
-        if split_line[0] in string_list:
-            # store drug's name, id, role
+        split_line = line.strip("\n").split("$")
+        if split_line[0] in id_dict:
             dct += 1
-            if dct % 50 == 0:
+            if dct % 300 == 0:
                 print(dct)
-            drug_name = split_line[6].replace("\n", "")
-            drug_id = split_line[1]
-            i = string_list.index(split_line[0])
-            yield [drug_name, drug_id, string_list[i]]
-    # case: search RxNorm for drug names/ingredient
+            dset[split_line[6]] = KEGG_template.copy()
+            tmp = copy.deepcopy(id_dict[split_line[0]]['drugs'])
+            tmp[split_line[6]] = dset[split_line[6]]
+            id_dict[split_line[0]]['drugs'] = tmp
+    print("num unique drugs:", len(dset))
+    #for i in dset: print(i)
+    #print("full dedup dict:", id_dict)
+    return [id_dict, dset]
 
 # generate reactions associated with each primaryid
-def FAERS_standard_generate_reactions(string_list, fp):
+def FAERS_standard_generate_reactions(id_dict, fp):
     rct = 0
     for line in fp:
         split_line = line.split("$")
-        if split_line[0] in string_list:
-            if rct % 50 == 0:
+        if split_line[0] in id_dict:
+            rlist = id_dict[split_line[0]]['reactions_MedDRA'].copy()
+            rlist.append(split_line[2].strip("\n"))
+            id_dict[split_line[0]]['reactions_MedDRA'] = rlist
+            rct += 1
+            if rct % 300 == 0:
                 print("rxn", rct)
-            i = string_list.index(split_line[0])
-            yield [split_line[2].replace("\n", ""), string_list[i]]
+            #yield [split_line[2].replace("\n", ""), string_list[i]]
+    return id_dict
 
 # European heat waves, June 2019
-start = '20190623'
-end = '20190628' 
-# countries =  Belgium, France, Germany, Poland, the Netherlands, Spain, Switzerland, and the United Kingdom
+start = '20180726'
+end = '20180804'
 
 # get a list of entries by picking lines with matching countries
 def FAERS_standard_generate_primaryids_random(path):
+    
+    # dont run if country list is already generated
     with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/text_files/all_countries.txt", "w") as output:
         for line in path:
             spl = line.split("$")
-            if spl[8] in country_list:
+            if spl[8] in country_list and spl[5].startswith("2019"):
                 output.write(line)
+    print("done writing countries")
     filt = open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/text_files/all_countries.txt").read().splitlines()
     lset = set([])
-    while len(lset) < 5:
+    while len(lset) < 20000:
+        #print(count)
+        #count+=1
         x = random.choice(filt).split("$")
         lset.add(x[1])
-        yield x[1]
+        #yield x[1]
+    return lset
 
 # adds a drug subdictionary for each drug for each corresponding safetyreportid key in FAERS_standardized
 def add_FAERS_standard_data_to_dictionary(case):
     if case == 1:
-        with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/DEMOGRAPHICS.txt", "r") as fp:
+        with open("FAERS_standardized/DEMOGRAPHICS.txt", "r") as fp:
             primaryid_gen = FAERS_standard_generate_primaryids_random(fp)
             primaryid_list = []
             for l in primaryid_gen:
                 primaryid_list.append(l)
         F_res_dict = dict( (pid, pid_template.copy()) for pid in primaryid_list )
-        #print(F_res_dict)
+        print("found", len(F_res_dict), "IDs")
     elif case == 0:
         # add primaryid keys that fulfill the search criteria
         with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/DEMOGRAPHICS.txt", "r") as fp:
             # generate a list of demographic info for each primaryid that fulfills the search requirements
             primaryid_list = FAERS_standard_generate_primaryids(fp, 1)
     # generate list of drugs associated with each primaryid
-    print(len(primaryid_list))
+
     print("starting drugs")
     with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/DRUGS_STANDARDIZED.txt", "r") as fp:
-        #print("lets find drugs")
-        drug_info = FAERS_standard_generate_drugs(primaryid_list, fp)
+        print("lets find drugs")
+        F_res_dict_d = FAERS_standard_generate_drugs(F_res_dict, fp)
+        '''
         # add info for each pid
+        print("got drug set")
         count = 0
         for dr in drug_info:
-            drugs_copy = copy.deepcopy(F_res_dict[dr[2]]['drugs'])
+            drugs_copy = copy.deepcopy(F_res_dict[dr[1]]['drugs'])
             drugs_sub_dict_copy = copy.deepcopy(drug_template)
             # add info for each drug in a given pid
             drugs_sub_dict_copy['drug_name'] = dr[0]
-            drugs_sub_dict_copy['drug_concept_id'] = dr[1]
             # add it to the dict
             drugs_copy.append(drugs_sub_dict_copy)
-            F_res_dict[dr[2]]['drugs'] = drugs_copy
+            F_res_dict[dr[1]]['drugs'] = drugs_copy
             count += 1
-        print("drug count", count)
+        '''
     print("drugs done")
     print("starting reactions")
     # adds outcome for each primary key by searching ADVERSE_REACTIONS.txt
     with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/ADVERSE_REACTIONS.txt") as fp:
-        reaction_info = FAERS_standard_generate_reactions(primaryid_list, fp)
+        #dict_cop = copy.deepcopy(F_res_dict_d[0])
+        rdict = FAERS_standard_generate_reactions(F_res_dict_d[0], fp)
         # generate a list reactions for each primaryid
-        tok = 0
+        '''
         for react in reaction_info:
-            if F_res_dict[react[1]]['reactions_MedDRA'] == None:
+            if F_res_dict_d[0][react[1]]['reactions_MedDRA'] == None:
                 reactions_list = []
             else:
-                reactions_list = F_res_dict[react[1]]['reactions_MedDRA'].copy()
+                reactions_list = F_res_dict_d[0][react[1]]['reactions_MedDRA'].copy()
             reactions_list.append(react[0])
-            F_res_dict[react[1]]['reactions_MedDRA'] = reactions_list
-            tok += 1
-            print("tok", tok)
+            F_res_dict_d[0][react[1]]['reactions_MedDRA'] = reactions_list
+        '''
     print("done with reactions")
-    #print(F_res_dict)
-    return(F_res_dict)
+    #print(rdict)
+    F_res_dict_d[0] = rdict
+    return(F_res_dict_d)

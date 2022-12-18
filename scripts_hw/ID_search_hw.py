@@ -1,23 +1,20 @@
-import requests
+#import requests
 import pandas as pd
-import datetime
+#import datetime
 import copy
 import random
-from subprocess import PIPE, Popen
-
 
 # are we using AEOLUS or FAERS_standard?
 aeolus = 0
 FAERS_std = 1
 safetyreportid_list = []
 
-country_list = ["BE", "FR", "DE", "NL", "GB", "PL", "ES", "CH"]
-            
+#country_list = ["BE", "FR", "DE", "NL", "GB", "PL", "ES", "CH"]
+country_list = ["PT", "ES", "FR", "NL", "BE", "IT"]
 
 '''
 # rate limiting is important to avoid accidental service abuse of the OpenFDA API provider
 from ratelimit import limits, sleep_and_retry
-
 
 # cache API calls in a sqllite file to reduce the number of requests to openfda server
 import requests_cache
@@ -76,7 +73,7 @@ columbia_api_key = 'Og4jAa0KIhPJkiwaxXVD6VHp3DGqoQf37JFPeRct'
 #end_date = input("Enter the end of your desired date range (YYMMDDDD): ")
 
 #country_list = input("Enter the countries you would like to limit your search to: ")
-#country_list = ["FR", "DE", "ES", "IT","CH"]
+
 
 
 # cluster get_dates function
@@ -184,15 +181,14 @@ KEGG_template = {"get_URL": None, "D_number": None, "Classes": None, "Target": N
 if aeolus == 1:
     # template for a drug value
     drug_template = { "drug_concept_id": None, "drug_name": None, "role_cod": None, "KEGG": KEGG_template.copy()}
-
     # template for a primaryid value
     pid_template = {'reactions_SNOMED': None, 'reactions_MedDRA': None, 'drugs': []}
 
 if FAERS_std == 1:
     # template for a drug value
-    drug_template = { "drug_concept_id": None, "drug_name": None, "role_cod": None, "KEGG": KEGG_template.copy()}
+    drug_template = {"KEGG": KEGG_template.copy()}
     # template for a primaryid value
-    pid_template = { 'reactions_MedDRA': None, 'drugs': []}
+    pid_template = { 'reactions_MedDRA': [], 'drugs': {}}
 
 
 
@@ -288,6 +284,7 @@ if aeolus == 1:
 # get primaryids in FAERS_stand files in given date
 # used to search DEMOGRAPHICS.txt
 def FAERS_standard_generate_primaryids(fp):
+    lset = set([])
     date_range = get_dates(start, end)
     # iterate through each line in the given file
     # case: search DEMOGRAPHICS.txt for matching dates AND countries
@@ -295,48 +292,56 @@ def FAERS_standard_generate_primaryids(fp):
         split_line = line.split("$")
         if split_line[5] in date_range and split_line[8] in country_list:
             # store primaryid, country, age, gender, date
-            primaryid = split_line[1]
+            lset.add(split_line[1])
+            #primaryid = split_line[1]
             #country_abbr = split_line[8]
             #age = split_line[6]
             #gender = split_line[7]
             #event_dt = split_line[5]
             #yield [primaryid, country_abbr, age, gender, event_dt]
-            yield primaryid
+            #yield primaryid
+    return lset
 
 
 # generate drug info associated with each primaryid
-def FAERS_standard_generate_drugs(string_list, fp):
+def FAERS_standard_generate_drugs(id_dict, fp):
     # primaryid, DRUG_ID, DRUG_SEQ, ROLE_COD, PERIOD, RXAUI, DRUG
     dct = 0
+    dset = {}
     for line in fp:
-        split_line = line.split("$")
-        if split_line[0] in string_list:
+        split_line = line.strip("\n").split("$")
+        if split_line[0] in id_dict:
             dct += 1
-            if dct % 50 == 0:
+            if dct % 300 == 0:
                 print(dct)
-            # store drug's name, id, role
-            drug_name = split_line[6].replace("\n", "")
-            drug_id = split_line[1]
-            drug_role = split_line[3]
-            i = string_list.index(split_line[0])
-            yield [drug_name, drug_id, drug_role, string_list[i]]
+            dset[split_line[6]] = KEGG_template.copy()
+            tmp = copy.deepcopy(id_dict[split_line[0]]['drugs'])
+            tmp[split_line[6]] = dset[split_line[6]]
+            id_dict[split_line[0]]['drugs'] = tmp
+    print("num unique drugs:", len(dset))
+    #for i in dset: print(i)
+    #print("full dedup dict:", id_dict)
+    return [id_dict, dset]
 
 # generate reactions associated with each primaryid
-def FAERS_standard_generate_reactions(string_list, fp):
+def FAERS_standard_generate_reactions(id_dict, fp):
     rct = 0
     for line in fp:
         split_line = line.split("$")
-        if split_line[0] in string_list:
+        if split_line[0] in id_dict:
+            rlist = id_dict[split_line[0]]['reactions_MedDRA'].copy()
+            rlist.append(split_line[2].strip("\n"))
+            id_dict[split_line[0]]['reactions_MedDRA'] = rlist
             rct += 1
-            if rct % 50 == 0:
-                print(rct)
-            i = string_list.index(split_line[0])
-            yield [split_line[2].replace("\n", ""), string_list[i]]
+            if rct % 300 == 0:
+                print("rxn", rct)
+            #yield [split_line[2].replace("\n", ""), string_list[i]]
+    return id_dict
 
-# European heat waves, June 2019
-start = '20190623'
-end = '20190628' 
-# countries =  Belgium, France, Germany, Poland, the Netherlands, Spain, Switzerland, and the United Kingdom
+# European heat waves, July august 2018
+start  = '20180726'
+end = '20180804'
+
 
 # get a list of entries by picking lines with matching countries
 def FAERS_standard_generate_primaryids_random(path):
@@ -361,34 +366,41 @@ def add_FAERS_standard_data_to_dictionary(case):
             for l in primaryid_gen:
                 primaryid_list.append(l)
         F_res_dict = dict( (pid, pid_template.copy()) for pid in primaryid_list )
-        print("found", len(primaryid_list), "IDs")
+        print("found", len(F_res_dict), "IDs")
 
     # generate list of drugs associated with each primaryid
     print("starting drugs")
+    with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/DRUGS_STANDARDIZED.txt", "r") as fp:
+        print("lets find drugs")
+        F_res_dict_d = FAERS_standard_generate_drugs(F_res_dict, fp)
+    '''
     with open("FAERS_standardized/DRUGS_STANDARDIZED.txt", "r") as fp:
         #print("lets find drugs")
         drug_info = FAERS_standard_generate_drugs(primaryid_list, fp)
         # add info for each pid
         count = 0
         for dr in drug_info:
-            drugs_copy = copy.deepcopy(F_res_dict[dr[3]]['drugs'])
+            drugs_copy = copy.deepcopy(F_res_dict[dr[2]]['drugs'])
             drugs_sub_dict_copy = copy.deepcopy(drug_template)
             # add info for each drug in a given pid
             drugs_sub_dict_copy['drug_name'] = dr[0]
             drugs_sub_dict_copy['drug_concept_id'] = dr[1]
-            drugs_sub_dict_copy['role_cod'] = dr[2]
             # add it to the dict
             drugs_copy.append(drugs_sub_dict_copy)
-            F_res_dict[dr[3]]['drugs'] = drugs_copy
+            F_res_dict[dr[2]]['drugs'] = drugs_copy
             count += 1
         print("drug count", count)
+    '''
     print("drugs done")
     print("starting reactions")
     # adds outcome for each primary key by searching ADVERSE_REACTIONS.txt
+    with open("/Users/loaner/Documents/GitHub/Symbolic-Methods-FAERS-Project/FAERS_standardized/ADVERSE_REACTIONS.txt") as fp:
+        rdict = FAERS_standard_generate_reactions(F_res_dict_d[0], fp)
+    
+    '''
     with open("FAERS_standardized/ADVERSE_REACTIONS.txt") as fp:
         reaction_info = FAERS_standard_generate_reactions(primaryid_list, fp)
         # generate a list reactions for each primaryid
-        tok = 0
         for react in reaction_info:
             if F_res_dict[react[1]]['reactions_MedDRA'] == None:
                 reactions_list = []
@@ -396,8 +408,7 @@ def add_FAERS_standard_data_to_dictionary(case):
                 reactions_list = F_res_dict[react[1]]['reactions_MedDRA'].copy()
             reactions_list.append(react[0])
             F_res_dict[react[1]]['reactions_MedDRA'] = reactions_list
-            tok += 1
-            print("tok", tok)
+    '''
     print("done with reactions")
-    #print(F_res_dict)
-    return(F_res_dict)
+    F_res_dict_d[0] = rdict
+    return(F_res_dict_d)
